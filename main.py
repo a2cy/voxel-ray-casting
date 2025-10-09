@@ -8,12 +8,14 @@ app = Ursina(borderless=False)
 raymarch_shader = Shader.load(Shader.GLSL, vertex="./raymarcher.vert", fragment="./raymarcher.frag")
 
 grass_texture = load_texture("grass")
+brick_texture = load_texture("brick")
 
 Sky()
 
 cube = Entity(model="cube", scale=16, double_sided=True, shader=raymarch_shader)
 
-cube.set_shader_input("u_texture", grass_texture)
+cube.set_shader_input("u_grass_texture", grass_texture)
+cube.set_shader_input("u_brick_texture", brick_texture)
 
 floor_collider = AABBCollider(Vec3(0, -0.5, 0), Vec3(0), Vec3(15, 0, 15))
 wall_1_collider = AABBCollider(Vec3(7.5, 1.5, 0), Vec3(0), Vec3(1, 3, 15))

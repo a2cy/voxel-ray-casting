@@ -2,7 +2,8 @@
 
 uniform mat4 p3d_ViewMatrixInverse;
 
-uniform sampler2D u_texture;
+uniform sampler2D u_grass_texture;
+uniform sampler2D u_brick_texture;
 
 in vec3 fragcoord;
 
@@ -50,8 +51,12 @@ vec3 traverse(vec3 position, vec3 direction) {
             hit_normal = 2.0;
         }
 
-        if (current_position.y < 0.0 || current_position == vec3(0.0, 1.0, 0.0)) {
+        if (current_position.y < 0.0) {
             return vec3(current_distance, hit_normal, 1.0);
+        }
+
+        if (current_position == vec3(0.0, 1.0, 0.0)) {
+            return vec3(current_distance, hit_normal, 2.0);
         }
     }
     return vec3(0.0);
@@ -88,7 +93,12 @@ void main() {
 
     if (ray_hit.z == 1.0) {
         vec3 point = camera_position + ray_hit.x * ray_direction;
-        color = triplanar(point, ray_hit.y, u_texture);
+        color = triplanar(point, ray_hit.y, u_grass_texture);
+    }
+
+    else if (ray_hit.z == 2.0) {
+        vec3 point = camera_position + ray_hit.x * ray_direction;
+        color = triplanar(point, ray_hit.y, u_brick_texture);
     }
 
     p3d_FragColor = color.rgba;
