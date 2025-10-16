@@ -51,6 +51,10 @@ vec3 traverse(vec3 position, vec3 direction) {
             hit_normal = 2.0;
         }
 
+        if (current_position.y > 1.0 && direction.y > 0) {
+            return vec3(0.0);
+        }
+
         if (current_position.y < 0.0) {
             return vec3(current_distance, hit_normal, 1.0);
         }
