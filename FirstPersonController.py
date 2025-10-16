@@ -2,17 +2,17 @@ from ursina import Entity, Vec3, time, held_keys, camera, mouse, lerp, clamp
 
 
 class AABBCollider:
-    def __init__(self, position, origin, scale):
+    def __init__(self, position: Vec3, origin: Vec3, scale: Vec3) -> None:
         self._half_scale = scale / 2
         self._origin = origin
         self.position = position
 
     @property
-    def position(self):
+    def position(self) -> Vec3:
         return self._position
 
     @position.setter
-    def position(self, value):
+    def position(self, value: Vec3) -> None:
         self._position = value
 
         self.x_1 = value.x + self._origin.x - self._half_scale.x
@@ -23,7 +23,7 @@ class AABBCollider:
         self.y_2 = value.y + self._origin.y + self._half_scale.y
         self.z_2 = value.z + self._origin.z + self._half_scale.z
 
-    def intersect(self, collider):
+    def intersect(self, collider) -> tuple:
         x_max = self.x_1 - collider.x_2
         x_min = collider.x_1 - self.x_2
 
@@ -44,8 +44,8 @@ class AABBCollider:
 
         return -min_dist, Vec3(normal_x, normal_y, normal_z)
 
-    def collide(self, collider, move_delta):
-        def get_time(x, y):
+    def collide(self, collider, move_delta: Vec3) -> tuple:
+        def get_time(x: float, y: float) -> float:
             return x / y if y else float("-" * (x > 0) + "inf")
 
         x_entry = get_time(collider.x_1 - self.x_2 if move_delta.x > 0 else collider.x_2 - self.x_1, move_delta.x)
@@ -71,7 +71,7 @@ class AABBCollider:
 
 
 class Player(Entity):
-    def __init__(self, colliders, **kwargs):
+    def __init__(self, colliders: list, **kwargs) -> None:
         super().__init__(**kwargs)
 
         self.gravity = 25
@@ -86,7 +86,7 @@ class Player(Entity):
         self.noclip_acceleration = 6
         self.noclip_mode = False
 
-        self.player_collider = AABBCollider(Vec3(0), Vec3(0, -0.6, 0), Vec3(0.8, 1.8, 0.8))
+        self.player_collider = AABBCollider(position=Vec3(0), origin=Vec3(0, -0.6, 0), scale=Vec3(0.8, 1.8, 0.8))
         self.colliders = colliders
 
         self.fov = 90
@@ -101,7 +101,7 @@ class Player(Entity):
         self.direction = Vec3(0)
         self.velocity = Vec3(0)
 
-    def update(self):
+    def update(self) -> None:
         self.rotation_y += mouse.velocity[0] * self.mouse_sensitivity
 
         self.camera_pivot.rotation_x -= mouse.velocity[1] * self.mouse_sensitivity
@@ -202,11 +202,11 @@ class Player(Entity):
 
             self.position += move_delta
 
-    def on_enable(self):
+    def on_enable(self) -> None:
         mouse.position = Vec3(0)
         mouse.locked = True
 
-    def on_disable(self):
+    def on_disable(self) -> None:
         mouse.locked = False
 
 
