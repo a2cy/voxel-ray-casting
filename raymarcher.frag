@@ -88,6 +88,7 @@ vec4 triplanar(vec3 point, float normal, sampler2D texture_map) {
 
 void main() {
     vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
+    vec4 fog_color = vec4(0.0);
 
     vec3 camera_position = p3d_ViewMatrixInverse[3].xyz / p3d_ViewMatrixInverse[3].w;
 
@@ -104,6 +105,9 @@ void main() {
         vec3 point = camera_position + ray_hit.x * ray_direction;
         color = triplanar(point, ray_hit.y, u_brick_texture);
     }
+
+    float fog = exp(-0.0008 * ray_hit.x * ray_hit.x);
+    color = mix(fog_color, color, fog);
 
     p3d_FragColor = color.rgba;
 }
